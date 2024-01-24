@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class Expense:
     EXPENSES = ['daily', 'weekly', 'monthly', 'yearly', 'one-time']
 
@@ -6,4 +9,12 @@ class Expense:
         self.amount = amount
         self.category = category
         self.periodicity = periodicity
-        self.date = date
+        self.date = self.parse_date(date)
+
+    def parse_date(self, date_str):
+        try:
+            date_object = datetime.strptime(date_str, '%Y-%m-%d')
+            return date_object
+        except ValueError:
+            print(f'Error parsing date: {date_str}')
+            return None
