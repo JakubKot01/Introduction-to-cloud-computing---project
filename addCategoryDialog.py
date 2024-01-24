@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, simpledialog, messagebox
-from ttkthemes import ThemedStyle
+from tkinter import ttk, simpledialog
+
 
 class AddCategoryDialog(simpledialog.Dialog):
     def body(self, master):

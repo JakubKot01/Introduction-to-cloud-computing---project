@@ -1,9 +1,13 @@
 import tkinter as tk
-from tkinter import ttk, simpledialog, messagebox
+from tkinter import ttk, messagebox
 
 from expense import Expense
 from databaseManager import db
 from databaseManager import expenseCategories
+from databaseManager import update_categories
+from databaseManager import expenses_list
+from databaseManager import get_document
+from databaseManager import get_all_docs
 
 from addExpenseWindow import AddExpenseWindow
 from addCategoryDialog import AddCategoryDialog
@@ -12,6 +16,11 @@ from addCategoryDialog import AddCategoryDialog
 class YourExpensesView(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+
+        print(expenseCategories)
+
+        get_all_docs('expensesCollection')
+        print(expenses_list)
 
         parent.title("Expense Tracker")
         parent.geometry("1400x600")
@@ -24,6 +33,8 @@ class YourExpensesView(ttk.Frame):
         parent.listbox.heading("Periodicity", text="Periodicity")
         parent.listbox.heading("Date", text="Date")
         parent.listbox.grid(row=0, column=1, rowspan=2, pady=10, padx=10, sticky="nsew")
+
+        self.fill_treeview_with_data(parent)
 
         parent.button_add_expense = ttk.Button(parent, text="Add Expense",
                                                command=lambda: self.show_add_expense_window(parent))
@@ -43,16 +54,22 @@ class YourExpensesView(ttk.Frame):
         parent.button_view_expenses.grid(row=0, column=0, pady=5, padx=5, sticky=tk.W + tk.E)
         parent.button_view_statistics.grid(row=1, column=0, pady=5, padx=5, sticky=tk.W + tk.E)
 
-        # Dodajmy kod, aby automatycznie wyświetlić widok Your Expenses po utworzeniu instancji
-        # self.show_expenses_view()
+    @staticmethod
+    def fill_treeview_with_data(parent):
+        for expense in expenses_list:
+            parent.listbox.insert("", "end", values=(
+                expense.name, expense.amount, expense.category, expense.periodicity, expense.date))
 
-    def show_add_expense_window(self, parent):
+    @staticmethod
+    def show_add_expense_window(parent):
         add_expense_window = AddExpenseWindow(parent)
         add_expense_window.grab_set()
 
     def add_category(self):
         dialog = AddCategoryDialog(self, title="Add Category")
-        new_category = dialog.result
+        new_category = str(dialog.result)
         if new_category:
             expenseCategories.append(new_category)
+            print(expenseCategories)
+            update_categories()
             tk.messagebox.showinfo("Success", f"Category '{new_category}' added.")

@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import date as datetype
 
 
 class Expense:
@@ -9,7 +10,14 @@ class Expense:
         self.amount = amount
         self.category = category
         self.periodicity = periodicity
-        self.date = self.parse_date(date)
+
+        if type(date) is str:
+            self.date = self.parse_date(date)
+        else:
+            year = date.year
+            month = date.month
+            day = date.day
+            self.date = datetype(year, month, day)
 
     def parse_date(self, date_str):
         try:

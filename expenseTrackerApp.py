@@ -3,8 +3,6 @@ from tkinter import ttk
 from ttkthemes import ThemedStyle
 
 from expense import Expense
-from databaseManager import db
-from databaseManager import expenseCategories
 from yourExpensesView import YourExpensesView
 
 import tkinter as tk
@@ -36,8 +34,6 @@ class ExpenseTrackerApp(tk.Tk):
         self.button_view_expenses.grid(row=0, column=0, pady=5, padx=5, sticky=tk.W + tk.E)
         self.button_view_statistics.grid(row=1, column=0, pady=5, padx=5, sticky=tk.W + tk.E)
 
-        self.your_expenses_view = None
-
     def switch_view(self, selected_view):
         if selected_view == "Your expenses":
             self.show_expenses_view()
@@ -45,14 +41,11 @@ class ExpenseTrackerApp(tk.Tk):
             self.show_statistics_view()
 
     def show_expenses_view(self):
-        if not self.your_expenses_view:
-            # Stwórz nową instancję YourExpensesView, jeśli jeszcze nie została utworzona
-            self.your_expenses_view = YourExpensesView(self)
+        self.your_expenses_view = YourExpensesView(self)
         self.your_expenses_view.tkraise()
         print("Showing Your expenses view")
 
     def show_statistics_view(self):
         # Implementacja wyświetlania widoku ze statystykami
         print("Showing Statistics view")
-
 
