@@ -4,10 +4,10 @@ from tkinter import ttk
 from tkcalendar import Calendar
 from datetime import datetime
 
-from databaseManager import expenseCategories
+from server import expenseCategories
 from expense import Expense
 
-from databaseManager import db
+from server import db
 
 
 class AddExpenseWindow(tk.Toplevel):

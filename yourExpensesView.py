@@ -2,12 +2,12 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from expense import Expense
-from databaseManager import db
-from databaseManager import expenseCategories
-from databaseManager import update_categories
-from databaseManager import expenses_list
-from databaseManager import get_document
-from databaseManager import get_all_docs
+from server import db
+from server import expenseCategories
+from server import update_categories
+from server import expenses_list
+from server import get_document
+from server import get_all_docs
 
 from addExpenseWindow import AddExpenseWindow
 from addCategoryDialog import AddCategoryDialog

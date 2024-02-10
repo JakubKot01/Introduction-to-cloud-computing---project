@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Expenses Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Expenses Tracker</h1>
+            <nav>
+                <ul>
+                    <li><a href="/" class="header-btn">Wydatki</a></li>
+                    <li><a href="/stats" class="header-btn">Statystyki</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <h2>Lista Wydatków</h2>
+            <table class="expenses-table">
+                <thead>
+                    <tr>
+                        <th>Nazwa</th>
+                        <th>Data</th>
+                        <th>Kwota</th>
+                        <th>Kategoria</th>
+                        <th>Okresowość</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.name }}</td>
+                        <td>{{ expense.date }}</td>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.category }}</td>
+                        <td>{{ expense.periodicity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+        <footer>
+            <p>&copy; 2024 Smart Expenses Tracker</p>
+        </footer>
+    </div>
+</body>
+</html>
