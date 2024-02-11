@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from typing import List, Any
 from expense import Expense
 import firebase_admin
@@ -11,9 +11,10 @@ db = firestore.client()
 
 app = Flask(__name__)
 
+expenses_list: list[Expense] = []
+
 @app.route('/')
 def index():
-    expenses_list: list[Expense] = []
 
     def get_document(collection_name, document_id):
         doc_ref = db.collection(collection_name).document(document_id)
@@ -46,8 +47,6 @@ def index():
                     doc_data['docData']['periodicity'],
                     doc_data['docData']['date']))
 
-    print(expenses_list)
-
     categories = get_document('categories', 'categories')
     expenseCategories = categories['categories']
 
@@ -62,9 +61,34 @@ def index():
     get_all_docs('expensesCollection')
     return render_template('index.html', expenses=expenses_list)
 
-@app.route('/stats')
-def stats():
-    return render_template('stats.html')
+
+@app.route('/add_expense')
+def add_expense():
+    return render_template('add_expense.html')
+
+
+@app.route('/submit_expense', methods=['POST'])
+def submit_expense():
+    name = request.form['name']
+    date = request.form['date']
+    amount = request.form['amount']
+    category = request.form['category']
+    periodicity = request.form['periodicity']
+
+    expenses_list.append(Expense(name, amount, category, periodicity, date))
+
+    # Dodaj nowy wydatek do bazy danych
+    db.collection('expensesCollection').add({
+        'name': name,
+        'date': date,
+        'amount': amount,
+        'category': category,
+        'periodicity': periodicity
+    })
+
+    # Przekieruj użytkownika z powrotem na stronę główną
+    return redirect('/')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

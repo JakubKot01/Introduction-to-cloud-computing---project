@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Expenses Tracker - Statystyki</title>
-    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Smart Expenses Tracker - Statystyki</h1>
+            <h1 class="title">Smart Expenses Tracker</h1>
             <nav>
                 <ul>
                     <li><a href="/" class="header-btn">Wydatki</a></li>

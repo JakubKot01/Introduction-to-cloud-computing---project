@@ -15,8 +15,10 @@ body {
 header {
     background-color: #4CAF50;
     color: white;
-    text-align: center;
-    padding: 20px 0;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 h1 {
@@ -24,34 +26,19 @@ h1 {
     margin: 0;
 }
 
-.sidebar {
-    background-color: #333;
-    color: #fff;
-    width: 200px;
-}
-
-.sidebar nav ul {
+nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.sidebar nav ul li {
-    padding: 20px;
+nav ul li {
+    display: inline;
+    margin-left: 10px;
 }
 
-.sidebar nav ul li a {
-    display: block;
-    color: #fff;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    padding: 15px 20px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-}
-
-.sidebar nav ul li a:hover {
-    background-color: #555;
+nav ul li:first-child {
+    margin-left: 0;
 }
 
 main {
@@ -99,15 +86,36 @@ main {
 }
 
 .header-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50;
     color: white;
     text-decoration: none;
+    padding: 10px 20px;
     border-radius: 5px;
+    background-color: #388E3C;
     transition: background-color 0.3s ease;
 }
 
 .header-btn:hover {
+    background-color: #1B5E20;
+}
+
+.title {
+    margin: 0;
+}
+
+.add-expense-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-expense-button:hover {
     background-color: #45a049;
 }
