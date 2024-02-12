@@ -9,11 +9,11 @@
 <body>
     <div class="container">
         <header>
-            <h1 class="title">Smart Expenses Tracker</h1>
+            <h1>Smart Expenses Tracker</h1>
             <nav>
                 <ul>
-                    <li><a href="/" class="header-btn">Wydatki</a></li>
-                    <li><a href="/stats" class="header-btn">Statystyki</a></li>
+                    <li><a href="/">Wydatki</a></li>
+                    <li><a href="/stats">Statystyki</a></li>
                 </ul>
             </nav>
         </header>
@@ -25,13 +25,21 @@
                         <th>Nazwa</th>
                         <th>Data</th>
                         <th>Kwota</th>
-                        <th>Kategoria</th>
+                        <th>
+                            <label for="category-filter">Kategoria:</label>
+                            <select id="category-filter">
+                                <option value="all">Wszystkie</option>
+                                {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
                         <th>Okresowość</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for expense in expenses %}
-                    <tr>
+                    <tr data-category="{{ expense.category }}">
                         <td>{{ expense.name }}</td>
                         <td>{{ expense.date }}</td>
                         <td>{{ expense.amount }}</td>
@@ -41,11 +49,31 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="/add_expense" class="add-expense-button">Dodaj wydatek</a> <!-- Dodajemy przycisk -->
+            <button id="addExpenseButton" onclick="window.location.href='/add_expense'">Dodaj wydatek</button>
         </main>
         <footer>
             <p>&copy; 2024 Smart Expenses Tracker</p>
         </footer>
     </div>
+
+    <script>
+        document.getElementById('category-filter').addEventListener('change', function() {
+            var category = this.value;
+            var rows = document.querySelectorAll('.expenses-table tbody tr');
+            rows.forEach(function(row) {
+                var rowCategory = row.getAttribute('data-category');
+                if (category === 'all' || rowCategory === category) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('addExpenseButton').addEventListener('click', function() {
+            // Przekierowanie do strony dodawania wydatku
+            window.location.href = '/add_expense';
+        });
+    </script>
 </body>
 </html>

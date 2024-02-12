@@ -12,59 +12,53 @@ db = firestore.client()
 app = Flask(__name__)
 
 expenses_list: list[Expense] = []
+categories: list[str] = []
+periodicity_list: list[str] = []
+
+def filter_expenses(category):
+    filtered_expenses = []
+    if category == 'Wszystkie':
+        filtered_expenses = get_expenses()
+    else:
+        for expense in get_expenses():
+            if expense.category == category:
+                filtered_expenses.append(expense)
+    return filtered_expenses
 
 @app.route('/')
 def index():
+    if request.method == 'POST':
+        selected_category = request.form['category']
+        expenses_list = filter_expenses(selected_category)
+    else:
+        expenses_list = get_expenses()
 
-    def get_document(collection_name, document_id):
-        doc_ref = db.collection(collection_name).document(document_id)
-        doc = doc_ref.get()
+    categories = get_categories()
+    return render_template('index.html', expenses=expenses_list, categories=categories)
 
-        if doc.exists:
-            return doc.to_dict()
-        else:
-            print(f"Document '{document_id}' not found in collection '{collection_name}'.")
-            return None
+def get_expenses():
+    expenses_list = []
+    docs = db.collection('expensesCollection').stream()
 
-    def get_all_docs(collectionName):
-        docs = (db.collection(collectionName).stream())
+    for doc in docs:
+        expense_data = doc.to_dict()
+        expenses_list.append(Expense(expense_data['name'], expense_data['amount'], expense_data['category'], expense_data['periodicity'], expense_data['date']))
 
-        documents_list = []
+    return expenses_list
 
-        for doc in docs:
-            doc_data = doc.to_dict()
-            doc_data['id'] = doc.id
-            doc_data['docData'] = doc._data
+def get_categories():
+    categories = []
+    doc = db.collection('categories').document('categories').get()
+    if doc.exists:
+        categories_data = doc.to_dict()
+        categories = categories_data['categories']
 
-            documents_list.append(doc_data)
-
-        for doc_data in documents_list:
-            expenses_list.append(
-                Expense(
-                    doc_data['docData']['name'],
-                    doc_data['docData']['amount'],
-                    doc_data['docData']['category'],
-                    doc_data['docData']['periodicity'],
-                    doc_data['docData']['date']))
-
-    categories = get_document('categories', 'categories')
-    expenseCategories = categories['categories']
-
-    def update_categories():
-        collection_ref = db.collection('categories')
-        doc_ref = collection_ref.document('categories')
-
-        doc_ref.update({
-            'categories': expenseCategories
-        })
-
-    get_all_docs('expensesCollection')
-    return render_template('index.html', expenses=expenses_list)
+    return categories
 
 
 @app.route('/add_expense')
 def add_expense():
-    return render_template('add_expense.html')
+    return render_template('add_expense.html', categories=categories)
 
 
 @app.route('/submit_expense', methods=['POST'])

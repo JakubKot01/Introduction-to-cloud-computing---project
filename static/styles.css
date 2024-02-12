@@ -103,19 +103,44 @@ main {
 }
 
 .add-expense-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 15px 20px;
-    font-size: 16px;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .add-expense-button:hover {
     background-color: #45a049;
+}
+
+#category-filter {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+#category-filter:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+#category-filter option {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #ccc;
+}
+
+#category-filter option:last-child {
+    border-bottom: none;
+}
+
+#category-filter:hover {
+    cursor: pointer;
 }
