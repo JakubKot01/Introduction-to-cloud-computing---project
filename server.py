@@ -4,7 +4,7 @@ from expense import Expense
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-cred = credentials.Certificate(r"D:\Desktop\UWr\Introduction to cloud computing\private key.json")
+cred = credentials.Certificate(r"..\Introduction to cloud computing\private key.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 expenses_list: list[Expense] = []
 categories: list[str] = []
-periodicity_list: list[str] = []
+periodicity_list: list[str] = ['daily', 'weekly', 'monthly', 'one-time']
 
 def filter_expenses(category):
     filtered_expenses = []
@@ -34,11 +34,20 @@ def index():
         expenses_list = get_expenses()
 
     categories = get_categories()
-    return render_template('index.html', expenses=expenses_list, categories=categories)
+
+    print('expenses_list:')
+    for expense in expenses_list:
+        print(expense.__getstate__())
+    print(f'categories: {categories}')
+    return render_template(
+        'index.html',
+        expenses=expenses_list,
+        categories=categories,
+        periodicity_list=periodicity_list)
 
 def get_expenses():
     expenses_list = []
-    docs = db.collection('expensesCollection').stream()
+    docs = db.collection('expensesCollection').order_by('date', direction=firestore.Query.DESCENDING).stream()
 
     for doc in docs:
         expense_data = doc.to_dict()
