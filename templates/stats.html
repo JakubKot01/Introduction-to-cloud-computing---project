@@ -8,31 +8,50 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <header>
-            <h1>Smart Expenses Tracker</h1>
-            <nav>
-                <ul>
-                    <li><a href="/" class="header-btn">Wydatki</a></li>
-                    <li><a href="/stats" class="header-btn">Statystyki</a></li>
-                </ul>
-            </nav>
-        </header>
-    <h1>Statistics</h1>
-
-    {% if error_message %}
-        <p>{{ error_message }}</p>
-    {% else %}
-        <div class="charts-container">
-            <div class="chart">
-                <img src="data:image/png;base64,{{ histogram_image_data }}" alt="Histogram">
-            </div>
-            <div class="chart">
-                <img src="data:image/png;base64,{{ bar_chart_image_data }}" alt="Cumulative Bar Chart">
-            </div>
-            <div class="chart">
-                <img src="data:image/png;base64,{{ pie_chart_image_data }}" alt="Pie Chart">
-            </div>
+    <header class="stats-header">
+        <h1>Smart Expenses Tracker</h1>
+        <nav>
+            <ul>
+                <li><a href="/" class="header-btn">Wydatki</a></li>
+                <li><a href="/stats" class="header-btn">Statystyki</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="sidebar">
+        <button class="sidebar-btn" onclick="showHistogram()">Day of Week Chart</button>
+        <button class="sidebar-btn" onclick="showCumulativeChart()">Cumulative Expense by Category</button>
+        <button class="sidebar-btn" onclick="showPieChart()">Percentage of Expenses by Category</button>
+    </div>
+    <div class="content">
+        <div id="histogram" class="chart" style="display: none;">
+            <img src="data:image/png;base64,{{ histogram_image_data }}" alt="Histogram">
         </div>
-    {% endif %}
+        <div id="cumulative" class="chart" style="display: none;">
+            <img src="data:image/png;base64,{{ bar_chart_image_data }}" alt="Cumulative Bar Chart">
+        </div>
+        <div id="pie" class="chart" style="display: none;">
+            <img src="data:image/png;base64,{{ pie_chart_image_data }}" alt="Pie Chart">
+        </div>
+    </div>
+
+    <script>
+        function showHistogram() {
+            document.getElementById("histogram").style.display = "block";
+            document.getElementById("cumulative").style.display = "none";
+            document.getElementById("pie").style.display = "none";
+        }
+
+        function showCumulativeChart() {
+            document.getElementById("histogram").style.display = "none";
+            document.getElementById("cumulative").style.display = "block";
+            document.getElementById("pie").style.display = "none";
+        }
+
+        function showPieChart() {
+            document.getElementById("histogram").style.display = "none";
+            document.getElementById("cumulative").style.display = "none";
+            document.getElementById("pie").style.display = "block";
+        }
+    </script>
 </body>
 </html>

@@ -1,15 +1,22 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from typing import List, Any
 from expense import Expense
 import firebase_admin
 from firebase_admin import credentials, firestore
 import requests
+from google.cloud import language_v1
+from google.oauth2 import service_account
+import google.cloud.language_v1.types
 import matplotlib.pyplot as plt
 import io
 import base64
 
 cred = credentials.Certificate(r"..\Introduction-to-cloud-computing\private-key.json")
+credentials = service_account.Credentials.from_service_account_file(
+    r"..\Introduction-to-cloud-computing\smart-expenses-tracker-414201-8a1571342373.json")
 firebase_admin.initialize_app(cred)
+
+client = language_v1.LanguageServiceClient(credentials=credentials)
 
 db = firestore.client()
 
@@ -142,13 +149,51 @@ def add_category():
     return redirect('/')
 
 
+@app.route('/suggest_category', methods=['POST'])
+def suggest_category():
+    print('Starting category prediction')
+    expense_name = request.form['expenseName']
+
+    # Wywołanie analizy tekstu przy użyciu Google Cloud Natural Language API
+    document = {"content": expense_name, "type": language_v1.Document.Type.PLAIN_TEXT}
+    response = client.analyze_entities(request={'document': document, 'encoding_type': language_v1.EncodingType.UTF32})
+
+    # Mapowanie fraz i rodzajów encji na kategorie
+    category_mapping = {
+        'food': ['dinner', 'lunch', 'breakfast', 'restaurant'],
+        'cosmetics': ['shampoo', 'perfume', 'perfumes', 'makeup', 'beauty', 'skincare'],
+        'car': ['gas', 'car repair', 'car wash', 'travel'],
+        'subscription': ['netflix', 'spotify', 'amazon prime', 'streaming'],
+        'bills and fees': ['rent', 'electricity', 'water', 'internet']
+    }
+
+    # Przypisanie kategorii na podstawie analizy fraz z nazwy wydatku
+    suggested_category = None
+    for entity in response.entities:
+        print(entity, end='\t')
+        for category, keywords in category_mapping.items():
+            if any(keyword in entity.name.lower() for keyword in keywords):
+                suggested_category = category
+                break
+
+    print("")
+
+    # Jeśli nie znaleziono odpowiedniej kategorii, użyj domyślnej kategorii
+    if suggested_category is None:
+        suggested_category = 'other'
+
+    print(f'Category prediction: {suggested_category}')
+
+    return jsonify({'suggested_category': suggested_category})
+
+
 @app.route('/stats')
 def stats():
     expenses_list = get_expenses_dict()
+    print(expenses_list)
 
-    # Pobierz dane o wydatkach z serwera Google Cloud Functions
-    amount_histograms = requests.post(
-        'https://europe-central2-smart-expenses-tracker-414201.cloudfunctions.net/generate_histogram1',
+    days_of_week_chart = requests.post(
+        'https://europe-central2-smart-expenses-tracker-414201.cloudfunctions.net/generate_days_of_week_chart',
         json={'expenses': expenses_list})
 
     categories_cumulative_chart = requests.post(
@@ -159,24 +204,26 @@ def stats():
         'https://europe-central2-smart-expenses-tracker-414201.cloudfunctions.net/generate_histogram3',
         json={'expenses': expenses_list})
 
-    if amount_histograms.status_code == 200 and categories_cumulative_chart.status_code == 200 and pie_chart.status_code == 200:
-        amount_histograms_data = amount_histograms.json()
+    print(f'status codes: {days_of_week_chart.status_code, categories_cumulative_chart.status_code, pie_chart.status_code}')
+
+    if days_of_week_chart.status_code == 200 and categories_cumulative_chart.status_code == 200 and pie_chart.status_code == 200:
+        days_of_week_data = days_of_week_chart.json()
         categories_cumulative_chart_data = categories_cumulative_chart.json()
         pie_chart_data = pie_chart.json()
 
-        if 'image' in amount_histograms_data and 'image' in categories_cumulative_chart_data and 'image' in pie_chart_data:
-            histogram_image_data = amount_histograms_data['image']
+        if 'image' in days_of_week_data and 'image' in categories_cumulative_chart_data and 'image' in pie_chart_data:
+            days_of_week_image_data = days_of_week_data['image']
             bar_chart_image_data = categories_cumulative_chart_data['image']
             pie_chart_image_data = pie_chart_data['image']
 
             # Wstaw wygenerowane wykresy do HTML
             return render_template(
                 'stats.html',
-                histogram_image_data=histogram_image_data,
+                histogram_image_data=days_of_week_image_data,
                 bar_chart_image_data=bar_chart_image_data,
                 pie_chart_image_data=pie_chart_image_data)
         else:
-            error_message = 'Wystąpił błąd podczas generowania wykresów'
+            error_message = 'Wystąpił błąd podczas pobierania wykresów'
             return render_template('stats.html', error_message=error_message)
     else:
         error_message = 'Wystąpił błąd podczas generowania wykresów'

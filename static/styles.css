@@ -18,12 +18,24 @@ html {
 }
 
 header {
-    background-color: #2d3748; /* Ciemniejszy odcień niebieskiego dla nagłówka */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2d3748;
     color: #e2e8f0;
     padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+}
+
+.stats-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2d3748;
+    color: #e2e8f0;
+    padding: 20px;
+    z-index: 1100;
 }
 
 h1 {
@@ -66,7 +78,9 @@ main {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    margin-top: 50px;
+    background-color: #1a202c;
+    color: #e2e8f0;
 }
 
 .expenses-table th, .expenses-table td {
@@ -203,4 +217,56 @@ main {
 .chart img {
     max-width: 100%;
     height: auto;
+}
+
+.sidebar {
+    position: fixed;
+    top: 120px;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: #2d3748;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.sidebar-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    text-align: left;
+    background-color: #4a5568; /* Ciemny szary dla przycisków w nagłówku */
+    border: none;
+    border-radius: 5px;
+    color: #e2e8f0; /* Kolor tekstu taki sam jak dla przycisków w nagłówku */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-btn:hover {
+    background-color: #2d3748; /* Ciemniejszy odcień niebieskiego po najechaniu myszką */
+}
+
+.chart {
+    margin: 60px;
+    margin-left: 220px; /* Adjust the margin to leave space for the sidebar */
+    padding-top: 40px; /* Dodaj odstęp na górze, aby nie przysłaniać przez nagłówek */
+    top: 140px;
+}
+
+main {
+    margin-top: 140px; /* Przesuń zawartość strony w dół */
+}
+
+.modal-dialog {
+    z-index: 1400;
+}
+
+.category-modal-dialog {
+    z-index: 1400;
+}
+
+.expense-modal-dialog {
+    z-index: 1400;
 }
