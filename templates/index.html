@@ -159,8 +159,8 @@
                     // Po pomyślnym dodaniu kategorii, dodaj ją do listy i wyczyść pole tekstowe
                     $("#category-filter").append('<option value="' + categoryName + '">' + categoryName + '</option>');
                     $("#categoryName").val('');
-                    // Zamknij okno modalne
                     $("#addCategoryModal").modal('hide');
+                    location.reload(true);
                 }).fail(function(xhr, status, error) {
                     // Obsłuż ewentualne błędy
                     console.error(xhr.responseText);
