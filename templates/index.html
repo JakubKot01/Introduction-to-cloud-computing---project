@@ -13,34 +13,34 @@
             <h1>Smart Expenses Tracker</h1>
             <nav>
                 <ul>
-                    <li><a href="/" class="header-btn">Wydatki</a></li>
-                    <li><a href="/stats" class="header-btn">Statystyki</a></li>
-                    <li><button id="addExpenseButton" class="header-btn">Dodaj wydatek</button></li>
-                    <li><button id="addCategoryButton" class="header-btn">Dodaj Kategorię</button></li>
+                    <li><a href="/" class="header-btn">Expenses</a></li>
+                    <li><a href="/stats" class="header-btn">Statistics</a></li>
+                    <li><button id="addExpenseButton" class="header-btn">Add Expense</button></li>
+                    <li><button id="addCategoryButton" class="header-btn">Add Category</button></li>
                 </ul>
             </nav>
         </header>
         <main>
-            <h2>Lista Wydatków</h2>
+            <h2>Expenses list</h2>
             <table class="expenses-table">
                 <thead>
                     <tr>
-                        <th>Nazwa</th>
-                        <th>Data</th>
-                        <th>Kwota</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Amount</th>
                         <th>
-                            <label for="category-filter">Kategoria:</label>
+                            <label for="category-filter">Category:</label>
                             <select id="category-filter">
-                                <option value="all">Wszystkie</option>
+                                <option value="all">All</option>
                                 {% for category in categories %}
                                 <option value="{{ category }}">{{ category }}</option>
                                 {% endfor %}
                             </select>
                         </th>
                         <th>
-                            Okresowość
+                            Periodicity
                             <select id="periodicity-filter" class="filter-select">
-                                <option value="all">Wszystkie</option>
+                                <option value="all">All</option>
                                 {% for periodicity in periodicity_list %}
                                 <option value="{{ periodicity }}">{{ periodicity }}</option>
                                 {% endfor %}
@@ -61,13 +61,13 @@
                 </tbody>
             </table>
 
-            <!-- Modale -->
-            <!-- Modal dodawania kategorii -->
+            <!-- Modals -->
+            <!-- Add Category Modal-->
             <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document" style="z-index: 1200;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="categoryModalLabel">Dodaj Kategorię</h5>
+                            <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -75,23 +75,23 @@
                         <div class="modal-body">
                             <form id="addCategoryForm">
                                 <div class="form-group">
-                                    <label for="categoryName">Nazwa Kategorii:</label>
+                                    <label for="categoryName">Category Name:</label>
                                     <input type="text" class="form-control" id="categoryName" name="categoryName" required>
                                 </div>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
-                                <button type="submit" class="btn btn-primary" id="saveCategoryButton">Zapisz</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="saveCategoryButton">Save</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Modal dodawania wydatku -->
+            <!-- Add Expense Modal -->
             <div class="modal fade" id="addExpenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document" style="z-index: 1200;">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="expenseModalLabel">Dodaj Wydatek</h5>
+                            <h5 class="modal-title" id="expenseModalLabel">Add Expense</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -99,37 +99,37 @@
                         <div class="modal-body">
                             <form id="addExpenseForm" method="POST" action="/add_expense">
                                 <div class="form-group">
-                                    <label for="expenseName">Nazwa:</label>
+                                    <label for="expenseName">Name:</label>
                                     <input type="text" class="form-control" id="expenseName" name="expenseName" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="expenseDate">Data:</label>
-                                    <input type="date" class="form-control" id="expenseDate" name="expenseDate" required>
+                                    <label for="expenseDate">Date:</label>
+                                    <input type="date" class="form-control" id="expenseDate" name="expenseDate" lang="en" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="expenseAmount">Kwota:</label>
+                                    <label for="expenseAmount">Amount:</label>
                                     <input type="number" class="form-control" id="expenseAmount" name="expenseAmount" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="expenseCategory">Kategoria:</label>
+                                    <label for="expenseCategory">Category:</label>
                                     <select class="form-control" id="expenseCategory" name="expenseCategory" required>
-                                        <option value="">Wybierz kategorię</option>
+                                        <option value="">Choose Category</option>
                                         {% for category in categories %}
                                         <option value="{{ category }}">{{ category }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="expensePeriodicity">Okresowość:</label>
+                                    <label for="expensePeriodicity">Periodicity:</label>
                                     <select class="form-control" id="expensePeriodicity" name="expensePeriodicity" required>
-                                        <option value="">Wybierz okresowość</option>
+                                        <option value="">Choose Periodicity</option>
                                         {% for periodicity in periodicity_list %}
                                         <option value="{{ periodicity }}">{{ periodicity }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
-                                <button type="submit" class="btn btn-primary" id="saveExpenseButton">Zapisz</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="saveExpenseButton">Save</button>
                             </form>
                         </div>
                     </div>
@@ -156,13 +156,17 @@
                 $.post("/add_category", {
                     categoryName: categoryName
                 }).done(function(response) {
-                    // Po pomyślnym dodaniu kategorii, dodaj ją do listy i wyczyść pole tekstowe
+
+                    // After successful adding the category, add to list and clean the text field
+
                     $("#category-filter").append('<option value="' + categoryName + '">' + categoryName + '</option>');
                     $("#categoryName").val('');
                     $("#addCategoryModal").modal('hide');
                     location.reload(true);
                 }).fail(function(xhr, status, error) {
-                    // Obsłuż ewentualne błędy
+
+                    // Errors to handle
+
                     console.error(xhr.responseText);
                 });
             });
@@ -176,7 +180,6 @@
                 $("#addExpenseModal").modal('show');
             });
 
-            // Poprawiona funkcja obsługująca kliknięcie na przycisku "Zapisz" przy dodawaniu wydatku
             $("#saveExpenseButton").click(function(){
                 $(this).prop('disabled', true);
                 var expenseName = $("#expenseName").val();
@@ -185,7 +188,7 @@
                 var expenseCategory = $("#expenseCategory").val();
                 var expensePeriodicity = $("#expensePeriodicity").val();
 
-                // Wysłanie danych wydatku do serwera za pomocą żądania AJAX
+                // Sending data to server via POST
                 $.post("/add_expense", {
                     expenseName: expenseName,
                     expenseDate: expenseDate,
@@ -199,7 +202,6 @@
                     // Obsłuż ewentualne błędy
                     console.error(xhr.responseText);
                 }).always(function() {
-                    // Po zakończeniu żądania, ponownie włącz przycisk "Zapisz"
                     $("#saveExpenseButton").prop('disabled', false);
                 });
             });
@@ -227,26 +229,21 @@
                 });
             }
 
-            // Wywołaj funkcję filterExpenses() po zmianie wartości w filtrach
+            // Call filterExpenses after filters values change
             categoryFilter.addEventListener('change', filterExpenses);
             periodicityFilter.addEventListener('change', filterExpenses);
 
-            // Inicjuj filtrowanie przy załadowaniu strony
+            // Filter initialization
             filterExpenses();
         });
-
-        // document.getElementById('addExpenseButton').addEventListener('click', function () {
-        //     // Przekierowanie do strony dodawania wydatku
-        //     window.location.href = '/add_expense';
-        // });
     </script>
 
     <script>
         $(document).ready(function(){
-            // Funkcja do obsługi zdarzenia po zmianie zawartości pola expenseName
+            // expenseName value change handler
             var expenseName;
             var typingTimer;
-            var doneTypingInterval = 1000; // Czas oczekiwania po zakończeniu pisania, w milisekundach
+            var doneTypingInterval = 1000; // Category prediction delay
 
             $("#expenseName").on('input', function() {
                 clearTimeout(typingTimer);
@@ -256,7 +253,7 @@
 
             function doneTyping() {
 
-                // Wywołanie żądania AJAX, aby uzyskać sugestie kategorii na podstawie nazwy wydatku
+                // Sending expenseName for category prediction
                 $.ajax({
                     type: "POST",
                     url: "/suggest_category",

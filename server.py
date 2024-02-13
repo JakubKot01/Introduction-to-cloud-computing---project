@@ -1,15 +1,11 @@
 from flask import Flask, render_template, request, redirect, jsonify
-from typing import List, Any
 from expense import Expense
 import firebase_admin
 from firebase_admin import credentials, firestore
 import requests
 from google.cloud import language_v1
 from google.oauth2 import service_account
-import google.cloud.language_v1.types
-import matplotlib.pyplot as plt
-import io
-import base64
+
 
 cred = credentials.Certificate(r"..\Introduction-to-cloud-computing\private-key.json")
 credentials = service_account.Credentials.from_service_account_file(
@@ -38,7 +34,6 @@ def get_expenses():
                     expense_data['periodicity'], expense_data['date'])
         )
 
-    # Posortuj listę wydatków według daty (od najnowszej do najstarszej)
     expenses_list.sort(key=lambda x: x.date, reverse=True)
 
     return expenses_list
@@ -56,13 +51,13 @@ def get_categories():
 
 def filter_expenses(category, periodicity):
     filtered_expenses = []
-    if category == 'Wszystkie' and periodicity == 'Wszystkie':
+    if category == 'All' and periodicity == 'All':
         filtered_expenses = get_expenses()
     else:
         for expense in get_expenses():
             if (expense.category == category and expense.periodicity == periodicity) \
-                    or (expense.category == category and expense.periodicity == 'Wszystkie') \
-                    or (expense.category == 'Wszystkie' and expense.periodicity == periodicity):
+                    or (expense.category == category and expense.periodicity == 'All') \
+                    or (expense.category == 'All' and expense.periodicity == periodicity):
                 filtered_expenses.append(expense)
     return filtered_expenses
 
@@ -81,7 +76,6 @@ def get_expenses_dict():
             'date': expense_data['date']
         })
 
-    # Posortuj listę wydatków według daty (od najnowszej do najstarszej)
     expenses_list.sort(key=lambda x: x['date'], reverse=True)
 
     return expenses_list
@@ -135,14 +129,14 @@ def add_expense():
 
 @app.route('/add_category', methods=['POST'])
 def add_category():
-    print(f'request form: {request.form}')  # Wypisz zawartość formularza
+    print(f'request form: {request.form}')
     category_name = request.form['categoryName']
     categories = get_categories()
     print(f'category name: {category_name}')
     print(f'categories: {categories}')
     print(f'db.collection: {db.collection("categories")}')
     categories.append(category_name)
-    # Użyj funkcji add(), aby zawsze dodać nowy dokument do kolekcji
+
     db.collection('categories').document("categories").update({
         'categories': categories
     })
@@ -154,11 +148,9 @@ def suggest_category():
     print('Starting category prediction')
     expense_name = request.form['expenseName']
 
-    # Wywołanie analizy tekstu przy użyciu Google Cloud Natural Language API
     document = {"content": expense_name, "type": language_v1.Document.Type.PLAIN_TEXT}
     response = client.analyze_entities(request={'document': document, 'encoding_type': language_v1.EncodingType.UTF32})
 
-    # Mapowanie fraz i rodzajów encji na kategorie
     category_mapping = {
         'food': ['dinner', 'lunch', 'breakfast', 'restaurant'],
         'cosmetics': ['shampoo', 'perfume', 'perfumes', 'makeup', 'beauty', 'skincare'],
@@ -167,7 +159,6 @@ def suggest_category():
         'bills and fees': ['rent', 'electricity', 'water', 'internet']
     }
 
-    # Przypisanie kategorii na podstawie analizy fraz z nazwy wydatku
     suggested_category = None
     for entity in response.entities:
         print(entity, end='\t')
@@ -178,7 +169,6 @@ def suggest_category():
 
     print("")
 
-    # Jeśli nie znaleziono odpowiedniej kategorii, użyj domyślnej kategorii
     if suggested_category is None:
         suggested_category = 'other'
 
@@ -216,17 +206,16 @@ def stats():
             bar_chart_image_data = categories_cumulative_chart_data['image']
             pie_chart_image_data = pie_chart_data['image']
 
-            # Wstaw wygenerowane wykresy do HTML
             return render_template(
                 'stats.html',
                 histogram_image_data=days_of_week_image_data,
                 bar_chart_image_data=bar_chart_image_data,
                 pie_chart_image_data=pie_chart_image_data)
         else:
-            error_message = 'Wystąpił błąd podczas pobierania wykresów'
+            error_message = 'Error: cannot download charts'
             return render_template('stats.html', error_message=error_message)
     else:
-        error_message = 'Wystąpił błąd podczas generowania wykresów'
+        error_message = 'Error: cannot generate charts'
         return render_template('stats.html', error_message=error_message)
 
 

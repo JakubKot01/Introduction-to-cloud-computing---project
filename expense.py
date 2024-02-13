@@ -12,7 +12,7 @@ class Expense:
         self.periodicity = periodicity
 
         if isinstance(date, datetime):
-            self.date = date.date()  # Pobierz tylko datę z obiektu datetime
+            self.date = date.date()
         elif isinstance(date, datetype):
             self.date = date
         elif isinstance(date, str):
@@ -23,7 +23,7 @@ class Expense:
     def parse_date(self, date_str):
         try:
             date_object = datetime.strptime(date_str, '%Y-%m-%d')
-            return date_object.date()  # Pobierz tylko datę
+            return date_object.date()
         except ValueError:
             print(f'Error parsing date: {date_str}')
             return None
