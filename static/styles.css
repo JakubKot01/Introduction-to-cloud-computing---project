@@ -31,6 +31,12 @@ h1 {
     margin: 0;
 }
 
+h2 {
+    font-size: 18px;
+    align-items: center;
+    align-content: center;
+}
+
 nav ul {
     list-style: none;
     padding: 0;
@@ -180,4 +186,21 @@ main {
 
 #periodicity-filter option:hover {
     background-color: #4a5568;
+}
+
+.charts-container {
+    display: flex;
+    overflow-x: auto;
+}
+
+.chart {
+    flex: 0 0 auto;
+    margin-right: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px; /* Dodano margines dolny */
+}
+
+.chart img {
+    max-width: 100%;
+    height: auto;
 }

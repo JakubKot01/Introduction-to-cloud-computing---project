@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div id="container">
-        <header>
-            <h1>Smart Expenses Tracker - statistics</h1>
+    <header>
+            <h1>Smart Expenses Tracker</h1>
             <nav>
                 <ul>
                     <li><a href="/" class="header-btn">Wydatki</a></li>
@@ -18,9 +17,22 @@
                 </ul>
             </nav>
         </header>
-        <main>
-            <h2>Statistics</h2>
-        </main>
-    </div>
+    <h1>Statistics</h1>
+
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% else %}
+        <div class="charts-container">
+            <div class="chart">
+                <img src="data:image/png;base64,{{ histogram_image_data }}" alt="Histogram">
+            </div>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ bar_chart_image_data }}" alt="Cumulative Bar Chart">
+            </div>
+            <div class="chart">
+                <img src="data:image/png;base64,{{ pie_chart_image_data }}" alt="Pie Chart">
+            </div>
+        </div>
+    {% endif %}
 </body>
 </html>
