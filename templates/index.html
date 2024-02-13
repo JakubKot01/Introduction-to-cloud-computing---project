@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Expenses Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
+    <div id="container">
         <header>
             <h1>Smart Expenses Tracker</h1>
             <nav>
                 <ul>
-                    <li><a href="/">Wydatki</a></li>
-                    <li><a href="/stats">Statystyki</a></li>
+                    <li><a href="/" class="header-btn">Wydatki</a></li>
+                    <li><a href="/stats" class="header-btn">Statystyki</a></li>
                 </ul>
             </nav>
         </header>
@@ -36,7 +37,7 @@
                         </th>
                         <th>
                             Okresowość
-                            <select id="periodicity-filter", class="filter-select">
+                            <select id="periodicity-filter" class="filter-select">
                                 <option value="all">Wszystkie</option>
                                 {% for periodicity in periodicity_list %}
                                 <option value="{{ periodicity }}">{{ periodicity }}</option>
@@ -47,7 +48,7 @@
                 </thead>
                 <tbody>
                     {% for expense in expenses %}
-                    <tr data-category="{{ expense.category }}">
+                    <tr data-category="{{ expense.category }}" data-periodicity="{{ expense.periodicity }}">
                         <td>{{ expense.name }}</td>
                         <td>{{ expense.date }}</td>
                         <td>{{ expense.amount }}</td>
@@ -57,44 +58,190 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <button id="addExpenseButton" onclick="window.location.href='/add_expense'">Dodaj wydatek</button>
+            <button id="addExpenseButton" class="btn btn-primary">Dodaj wydatek</button>
+            <button id="addCategoryButton" class="btn btn-primary">Dodaj Kategorię</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="categoryModalLabel">Dodaj Kategorię</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addCategoryForm" method="POST" action="/add_category">
+                                <div class="form-group">
+                                    <label for="categoryName">Nazwa Kategorii:</label>
+                                    <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                                </div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                                <button type="submit" class="btn btn-primary" id="saveCategoryButton">Zapisz</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="addExpenseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="expenseModalLabel">Dodaj Wydatek</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addExpenseForm" method="POST" action="/add_expense">
+                                <div class="form-group">
+                                    <label for="expenseName">Nazwa:</label>
+                                    <input type="text" class="form-control" id="expenseName" name="expenseName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expenseDate">Data:</label>
+                                    <input type="date" class="form-control" id="expenseDate" name="expenseDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expenseAmount">Kwota:</label>
+                                    <input type="number" class="form-control" id="expenseAmount" name="expenseAmount" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expenseCategory">Kategoria:</label>
+                                    <select class="form-control" id="expenseCategory" name="expenseCategory" required>
+                                        <option value="">Wybierz kategorię</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category }}">{{ category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expensePeriodicity">Okresowość:</label>
+                                    <select class="form-control" id="expensePeriodicity" name="expensePeriodicity" required>
+                                        <option value="">Wybierz okresowość</option>
+                                        {% for periodicity in periodicity_list %}
+                                        <option value="{{ periodicity }}">{{ periodicity }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                                <button type="submit" class="btn btn-primary" id="saveExpenseButton">Zapisz</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
         <footer>
             <p>&copy; 2024 Smart Expenses Tracker</p>
         </footer>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script>
-        document.getElementById('category-filter').addEventListener('change', function() {
-            var category = this.value;
-            var rows = document.querySelectorAll('.expenses-table tbody tr');
-            rows.forEach(function(row) {
-                var rowCategory = row.getAttribute('data-category');
-                if (category === 'all' || rowCategory === category) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+        $(document).ready(function(){
+            $("#addCategoryButton").click(function(){
+                $("#addCategoryModal").modal('show');
+            });
+
+            $("#saveCategoryButton").click(function(){
+                var categoryName = $("#categoryName").val();
+                $.post("/add_category", {
+                    categoryName: categoryName
+                }).done(function(response) {
+                    // Po pomyślnym dodaniu kategorii, dodaj ją do listy i wyczyść pole tekstowe
+                    $("#category-filter").append('<option value="' + categoryName + '">' + categoryName + '</option>');
+                    $("#categoryName").val('');
+                    // Zamknij okno modalne
+                    $("#addCategoryModal").modal('hide');
+                }).fail(function(xhr, status, error) {
+                    // Obsłuż ewentualne błędy
+                    console.error(xhr.responseText);
+                });
             });
         });
 
-        document.getElementById('periodicity-filter').addEventListener('change', function() {
-            var periodicity = this.value;
-            var rows = document.querySelectorAll('.expenses-table tbody tr');
-            rows.forEach(function(row) {
-                var rowPeriodicity = row.getAttribute('data-periodicity');
-                if (periodicity === 'all' || rowPeriodicity === periodicity) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $("#addExpenseButton").click(function(){
+                $("#addExpenseModal").modal('show');
+            });
+
+            // Poprawiona funkcja obsługująca kliknięcie na przycisku "Zapisz" przy dodawaniu wydatku
+            $("#saveExpenseButton").click(function(){
+                var expenseName = $("#expenseName").val();
+                var expenseDate = $("#expenseDate").val();
+                var expenseAmount = $("#expenseAmount").val();
+                var expenseCategory = $("#expenseCategory").val();
+                var expensePeriodicity = $("#expensePeriodicity").val();
+
+                // Wysłanie danych wydatku do serwera za pomocą żądania AJAX
+                $.post("/add_expense", {
+                    expenseName: expenseName,
+                    expenseDate: expenseDate,
+                    expenseAmount: expenseAmount,
+                    expenseCategory: expenseCategory,
+                    expensePeriodicity: expensePeriodicity
+                }).done(function(response) {
+                    // Po pomyślnym dodaniu wydatku, dodaj go do tabeli wydatków bez konieczności przeładowania strony
+                    // var newRow = "<tr data-category='" + category + "' data-periodicity='" + periodicity + "'>" +
+                    //                 "<td>" + name + "</td>" +
+                    //                 "<td>" + date + "</td>" +
+                    //                 "<td>" + amount + "</td>" +
+                    //                 "<td>" + category + "</td>" +
+                    //                 "<td>" + periodicity + "</td>" +
+                    //              "</tr>";
+                    // $(".expenses-table tbody").append(newRow);
+                    $("#addExpenseModal").modal('hide');
+                }).fail(function(xhr, status, error) {
+                    // Obsłuż ewentualne błędy
+                    console.error(xhr.responseText);
+                });
             });
         });
+    </script>
 
-        document.getElementById('addExpenseButton').addEventListener('click', function() {
-            // Przekierowanie do strony dodawania wydatku
-            window.location.href = '/add_expense';
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var categoryFilter = document.getElementById('category-filter');
+            var periodicityFilter = document.getElementById('periodicity-filter');
+
+            function filterExpenses() {
+                var selectedCategory = categoryFilter.value;
+                var selectedPeriodicity = periodicityFilter.value;
+                var rows = document.querySelectorAll('.expenses-table tbody tr');
+                rows.forEach(function (row) {
+                    var rowCategory = row.getAttribute('data-category');
+                    var rowPeriodicity = row.getAttribute('data-periodicity');
+                    if ((selectedCategory === 'all' || rowCategory === selectedCategory) &&
+                        (selectedPeriodicity === 'all' || rowPeriodicity === selectedPeriodicity)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            // Wywołaj funkcję filterExpenses() po zmianie wartości w filtrach
+            categoryFilter.addEventListener('change', filterExpenses);
+            periodicityFilter.addEventListener('change', filterExpenses);
+
+            // Inicjuj filtrowanie przy załadowaniu strony
+            filterExpenses();
         });
+
+        // document.getElementById('addExpenseButton').addEventListener('click', function () {
+        //     // Przekierowanie do strony dodawania wydatku
+        //     window.location.href = '/add_expense';
+        // });
     </script>
 </body>
 </html>

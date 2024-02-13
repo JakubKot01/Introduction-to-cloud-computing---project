@@ -1,20 +1,25 @@
-body {
+html {
+    background-color: #1a202c;
+}
+
+.my_body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
+    background-color: #1a202c; /* Głęboki odcień niebieskiego, tło ciemniejsze */
+    color: #e2e8f0; /* Jasnoszary tekst */
 }
 
 .container {
     display: flex;
-    flex-direction: column; /* Ustawiamy flex-direction na column */
+    flex-direction: column;
     min-height: 100vh;
     justify-content: space-between;
 }
 
 header {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #2d3748; /* Ciemniejszy odcień niebieskiego dla nagłówka */
+    color: #e2e8f0;
     padding: 20px;
     display: flex;
     justify-content: space-between;
@@ -46,7 +51,7 @@ main {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Wyśrodkowanie zawartości */
+    align-items: center;
 }
 
 .expenses-table {
@@ -55,20 +60,20 @@ main {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px; /* Dodajemy margines na górę */
+    margin-top: 20px;
 }
 
 .expenses-table th, .expenses-table td {
     padding: 15px 20px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #4a5568; /* Ciemny szary dla linii oddzielających */
     text-align: left;
 }
 
 .expenses-table th {
-    background-color: #f2f2f2;
+    background-color: #2d3748;
     font-weight: bold;
     text-transform: uppercase;
-    color: #333;
+    color: #e2e8f0;
 }
 
 @media (max-width: 600px) {
@@ -86,16 +91,16 @@ main {
 }
 
 .header-btn {
-    color: white;
+    color: #e2e8f0;
     text-decoration: none;
     padding: 10px 20px;
     border-radius: 5px;
-    background-color: #388E3C;
+    background-color: #4a5568; /* Ciemny szary dla przycisków w nagłówku */
     transition: background-color 0.3s ease;
 }
 
 .header-btn:hover {
-    background-color: #1B5E20;
+    background-color: #2d3748; /* Ciemniejszy odcień niebieskiego po najechaniu myszką */
 }
 
 .title {
@@ -120,21 +125,24 @@ main {
 #category-filter {
     padding: 8px 12px;
     font-size: 14px;
-    border: 1px solid #ccc;
+    border: 1px solid #4a5568;
     border-radius: 4px;
-    background-color: #fff;
+    background-color: #2d3748;
     transition: border-color 0.3s ease;
+    color: #e2e8f0;
 }
 
 #category-filter:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: #6d28d9; /* Fioletowy */
 }
 
 #category-filter option {
     padding: 8px 12px;
     font-size: 14px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #4a5568;
+    background-color: #2d3748;
+    color: #e2e8f0;
 }
 
 #category-filter option:last-child {
@@ -148,27 +156,28 @@ main {
 #periodicity-filter {
     padding: 8px 12px;
     font-size: 14px;
-    border: 1px solid #ccc;
+    border: 1px solid #4a5568;
     border-radius: 5px;
-    background-color: #fff;
+    background-color: #2d3748;
     transition: border-color 0.3s ease;
+    color: #e2e8f0;
 }
 
 #periodicity-filter:hover {
-    border-color: #555;
+    border-color: #6d28d9;
 }
 
 /* Styl dla options w selectcie filtra Okresowość */
 #periodicity-filter option {
     padding: 8px 12px;
     font-size: 14px;
-    background-color: #fff;
-    color: #333;
+    background-color: #2d3748;
+    color: #e2e8f0;
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
 #periodicity-filter option:hover {
-    background-color: #f2f2f2;
+    background-color: #4a5568;
 }

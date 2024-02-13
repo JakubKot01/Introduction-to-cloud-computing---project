@@ -11,18 +11,19 @@ class Expense:
         self.category = category
         self.periodicity = periodicity
 
-        if type(date) is str:
+        if isinstance(date, datetime):
+            self.date = date.date()  # Pobierz tylko datę z obiektu datetime
+        elif isinstance(date, datetype):
+            self.date = date
+        elif isinstance(date, str):
             self.date = self.parse_date(date)
         else:
-            year = date.year
-            month = date.month
-            day = date.day
-            self.date = datetype(year, month, day)
+            raise ValueError("Invalid date format")
 
     def parse_date(self, date_str):
         try:
             date_object = datetime.strptime(date_str, '%Y-%m-%d')
-            return date_object
+            return date_object.date()  # Pobierz tylko datę
         except ValueError:
             print(f'Error parsing date: {date_str}')
             return None

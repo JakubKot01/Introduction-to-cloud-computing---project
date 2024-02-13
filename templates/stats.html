@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Expenses Tracker - Statystyki</title>
+    <title>Smart Expenses Tracker</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
+    <div id="container">
         <header>
-            <h1 class="title">Smart Expenses Tracker</h1>
+            <h1>Smart Expenses Tracker - statistics</h1>
             <nav>
                 <ul>
                     <li><a href="/" class="header-btn">Wydatki</a></li>
@@ -17,15 +18,9 @@
                 </ul>
             </nav>
         </header>
-        <div class="content">
-            <main>
-                <h2>Statystyki</h2>
-                <!-- Tutaj będą wyświetlane różne wykresy i statystyki -->
-            </main>
-        </div>
-        <footer>
-            <p>&copy; 2024 Smart Expenses Tracker</p>
-        </footer>
+        <main>
+            <h2>Statistics</h2>
+        </main>
     </div>
 </body>
 </html>

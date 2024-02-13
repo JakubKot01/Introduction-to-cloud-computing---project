@@ -6,7 +6,7 @@
     <title>Dodaj wydatek</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
+<body class="my_body">
     <div class="container">
         <header>
             <h1>Dodaj wydatek</h1>
@@ -27,7 +27,12 @@
                     {% endfor %}
                 </select><br><br>
                 <label for="periodicity">Okresowość:</label>
-                <input type="text" id="periodicity" name="periodicity" required><br><br>
+                <select id="periodicity" name="periodicity">
+                    <option value="" disabled selected>Wybierz okresowość</option>
+                    {% for periodicity in periodicity_list %}
+                    <option value="{{ periodicity }}">{{ periodicity }}</option>
+                    {% endfor %}
+                </select><br><br>
                 <input type="submit" value="Dodaj">
             </form>
         </main>
